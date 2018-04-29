@@ -1,0 +1,6 @@
+logs/
+precipstat/
+bin/*.*
+bin/setup/*.py
+windygram/settings.py
+viewer/migrations/
