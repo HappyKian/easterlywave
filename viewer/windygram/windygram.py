@@ -99,9 +99,8 @@ class Windygram:
         HALF_DAY = timedelta(hours = 12)
         # Color nights
         if self.times[0].hour > 12:
-            first_time = self.times[0]
-            night_hours = timedelta(hours=24 - self.times[0].hour)
-            self.ax.axvspan(first_time, first_time + night_hours, alpha=0.5, color='#E5E5E5', zorder=0)
+            first_time = self.times[0].replace(hour=12)
+            self.ax.axvspan(first_time, first_time + HALF_DAY, alpha=0.5, color='#E5E5E5', zorder=0)
         for i, t in enumerate(self.times):
             if t.hour == 12:
                 self.ax.axvspan(t, t + HALF_DAY, alpha=0.5, color='#E5E5E5', zorder=0)
