@@ -71,8 +71,9 @@ class Windygram:
         self.d_meteo = d_meteo
     
     def set_time(self):
-        self.times = [datetime.fromtimestamp(ts // 1000) - timedelta(
-            hours=self.d_detail['header']['utcOffset']) for ts in self.d_detail['data']['origTs']]
+        utc_offset = timedelta(hours=self.d_detail['header']['utcOffset'])
+        self.times = [datetime.strptime(ts[:19], '%Y-%m-%dT%H:%M:%S') - 
+            utc_offset for ts in self.d_detail['data']['origDate']]
         self.basetime = datetime.strptime(
             self.d_detail['header']['refTime'], '%Y-%m-%dT%H:%M:%SZ')
         self.endtime = self.times[-1] + timedelta(hours=3)
@@ -87,7 +88,7 @@ class Windygram:
         self.dpi = dpi
         self.fig = plt.figure(figsize=figsize)
         self.ax = plt.gca()
-        self.ax.xaxis.set_major_locator(mdt.HourLocator(interval=12))
+        self.ax.xaxis.set_major_locator(mdt.HourLocator(byhour=(0,12)))
         self.ax.xaxis.set_major_formatter(mdt.DateFormatter('%d/%HZ'))
         self.ax.xaxis.set_minor_locator(mdt.HourLocator(interval=3))
         self.ax.xaxis.set_minor_formatter(mdt.DateFormatter(''))
@@ -96,11 +97,15 @@ class Windygram:
     def init_grid(self):
         plt.grid(True, axis='x', which='both', color='#666666', linestyle=':', linewidth=0.1)
         HALF_DAY = timedelta(hours = 12)
+        # Color nights
+        if self.times[0].hour > 12:
+            first_time = self.times[0]
+            night_hours = timedelta(hours=24 - self.times[0].hour)
+            self.ax.axvspan(first_time, first_time + night_hours, alpha=0.5, color='#E5E5E5', zorder=0)
         for i, t in enumerate(self.times):
             if t.hour == 12:
                 self.ax.axvspan(t, t + HALF_DAY, alpha=0.5, color='#E5E5E5', zorder=0)
         
-
     def _iter(self):
         return range(len(self.times))
 
@@ -432,7 +437,7 @@ class Windygram:
 
     def save_plot(self, target):
         THREEHOUR = timedelta(hours=3)
-        self.ax.xaxis.set_major_locator(mdt.HourLocator(interval=12))
+        self.ax.xaxis.set_major_locator(mdt.HourLocator(byhour=(0, 12)))
         self.ax.xaxis.set_major_formatter(mdt.DateFormatter('%d/%HZ'))
         plt.xlim([self.times[0] - THREEHOUR, self.times[-1] + THREEHOUR])
         self.filename = target

@@ -11,7 +11,7 @@ from django.views.generic.base import TemplateView, View
 import requests
 from hanziconv import HanziConv
 
-from viewer.models import Station
+from viewer.models import Station, HitRecord
 from viewer.windygram.windygram import Windygram
 
 PIC_DIR = os.path.join(settings.BASE_DIR, 'img')
@@ -95,6 +95,17 @@ class MakingPlotView(AjaxResponseMixin, JSONResponseMixin, View):
             logger.info('{} ({}, {}) selected.'.format(name, lat, lon))
             chosen.hit += 1
             chosen.save()
+        if name is None:
+            query_name = '0'
+        else:
+            query_name = name
+        try:
+            record = HitRecord.objects.get(name=query_name, date=datetime.date.today())
+        except HitRecord.DoesNotExist:
+            record = HitRecord.objects.create(name=query_name)
+        else:
+            record.hit += 1
+            record.save()
         lat = round(lat, 3)
         lon = round(lon, 3)
         try:

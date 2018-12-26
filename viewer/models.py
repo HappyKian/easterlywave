@@ -15,3 +15,21 @@ class Station(models.Model):
     def __str__(self):
         return '{} {}'.format(self.code, self.name)
 
+    class Meta:
+
+        ordering = ['-hit']
+
+
+class HitRecord(models.Model):
+
+    name = models.CharField(max_length=32)
+    date = models.DateField(auto_now=True)
+    hit = models.IntegerField(editable=False, default=1, blank=True)
+
+    def __str__(self):
+        return '{} {} > {}'.format(self.date.strftime('%Y/%m/%d'), self.name, self.hit)
+
+    class Meta:
+
+        unique_together = ('name', 'date')
+        ordering = ['-hit']

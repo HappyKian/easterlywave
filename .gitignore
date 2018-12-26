@@ -7,3 +7,4 @@ viewer/migrations/
 */__pycache__/
 static/admin/
 *.pyc
+.vscode/

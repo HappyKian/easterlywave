@@ -150,7 +150,7 @@ class WeatherCode:
 
     def set_code(self, code):
         self.code = code
-        logger.debug('CODE {}'.format(code))
+        # logger.debug('CODE {}'.format(code))
         codes = self.code.split(',')
         cloud = Cloud(*codes[:3])
         obscur = Obscuration(codes[3])
