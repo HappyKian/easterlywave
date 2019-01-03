@@ -23,7 +23,7 @@ class Station(models.Model):
 class HitRecord(models.Model):
 
     name = models.CharField(max_length=32)
-    date = models.DateField(auto_now=True)
+    date = models.DateField(auto_now_add=True)
     hit = models.IntegerField(editable=False, default=1, blank=True)
 
     def __str__(self):
@@ -33,3 +33,16 @@ class HitRecord(models.Model):
 
         unique_together = ('name', 'date')
         ordering = ['-hit']
+
+
+NOTICE_TYPES = ((1, 'good'), (2, 'neutral'), (3, 'bad'))
+
+class Notice(models.Model):
+
+    typ = models.IntegerField(choices=NOTICE_TYPES)
+    ttl = models.IntegerField(default=360, blank=True) # in minutes
+    start_time = models.DateTimeField(auto_now_add=True)
+    content = models.CharField(max_length=256)
+
+    def __str__(self):
+        return '<Notice at {}>'.format(self.start_time)

@@ -11,6 +11,12 @@
 </head>
 
 <body>
+    <style>
+        .text-small {font-size: smaller;}
+        .color-bad {color: #ff2050;}
+        .color-neutral {color: #252025;}
+        .color-good {color: #20a050;}
+    </style>
     <main role="main" class="container-fluid">
         <div class="row" style="min-height:7vh"></div>
         <div class="row">
@@ -27,6 +33,21 @@
                 </div>
             </div>
         </div>
+        {% for notice in notices %}
+        <div class="row">
+            <div class="col-lg-3 col-sm-1"></div>
+            <div class="col-lg-6 col-sm-10 text-small color-{{notice.get_typ_display}}">
+                {% if notice.typ == 1 %}
+                <i class="fa fa-check-circle"></i>
+                {% elif notice.typ == 2 %}
+                <i class="fa fa-info-circle"></i>
+                {% elif notice.typ == 3 %}
+                <i class="fa fa-exclamation-circle"></i>
+                {% endif %}
+                {{ notice.content }}
+            </div>
+        </div>
+        {% endfor %}
         <br>
         <div class="row">
             <div class="col-lg-1 col-sm-1"></div>
@@ -55,7 +76,8 @@
             dataType: 'json',
             paramName: 'content',
             formatResult: function (suggestion, cv) {return suggestion.data + ' ' + suggestion.value;},
-            onSelect: function (suggestion) {just_plot(suggestion.data);}
+            onSelect: function (suggestion) {just_plot(suggestion.data);},
+            triggerSelectOnValidInput: false
         });
 
         /**

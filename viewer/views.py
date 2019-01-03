@@ -7,11 +7,12 @@ import time
 from braces.views import AjaxResponseMixin, JSONResponseMixin
 from django.conf import settings
 from django.shortcuts import render
+from django.utils import timezone
 from django.views.generic.base import TemplateView, View
 import requests
 from hanziconv import HanziConv
 
-from viewer.models import Station, HitRecord
+from viewer.models import Station, HitRecord, Notice
 from viewer.windygram.windygram import Windygram
 
 PIC_DIR = os.path.join(settings.BASE_DIR, 'img')
@@ -22,6 +23,16 @@ logger = logging.getLogger(__name__)
 
 class HomepageView(TemplateView):
     template_name = 'base.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_time = timezone.now()
+        notices = []
+        for notice in Notice.objects.all():
+            if notice.start_time + datetime.timedelta(minutes=notice.ttl) > current_time:
+                notices.append(notice)
+        context['notices'] = notices
+        return context
 
 
 SUGGESTION_NUM = 5
