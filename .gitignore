@@ -1,5 +1,7 @@
 logs/
-precipstat/
+precipstat/bot.py
+precipstat/migrations/
+precipstat/testtools/
 readme_dev/
 bin/*.*
 bin/supervisor/
