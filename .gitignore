@@ -1,6 +1,8 @@
 logs/
 precipstat/
+readme_dev/
 bin/*.*
+bin/supervisor/
 bin/setup/*.py
 windygram/settings.py
 viewer/migrations/

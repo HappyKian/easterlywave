@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 from viewer.views import *
+from sate.views import SatelliteImageView
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 urlpatterns = [
     path('admintown/', admin.site.urls),
     path('windygram', ensure_csrf_cookie(HomepageView.as_view()), name='home'),
+    path('satellite', SatelliteImageView.as_view(), name='sate'),
     path('', RedirectView.as_view(pattern_name='home', permanent=True)),
     path('ajax/search', SearchSuggestionView.as_view(), name='search'),
     path('ajax/plot', MakingPlotView.as_view(), name='plot'),

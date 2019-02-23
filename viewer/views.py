@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 
 class HomepageView(TemplateView):
-    template_name = 'base.html'
+    template_name = 'windygram.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

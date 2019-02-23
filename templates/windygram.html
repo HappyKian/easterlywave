@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Windygram - ECMWF single point weather plot{% endblock %}
+
+{% block content %}
+<div class="row" style="min-height:7vh"></div>
+<div class="row">
+    <div class="col-lg-3 col-sm-1"></div>
+    <div class="col-lg-6 col-sm-10">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="支持全国2443个国家站" id="inputbox">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="btn-plot">
+                    <i class="fa fa-circle-o-notch fa-spin fa-fw" style="display:none"></i>
+                    Make plot, not love
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% for notice in notices %}
+<div class="row">
+    <div class="col-lg-3 col-sm-1"></div>
+    <div class="col-lg-6 col-sm-10 text-small color-{{notice.get_typ_display}}">
+        {% if notice.typ == 1 %}
+        <i class="fa fa-check-circle"></i>
+        {% elif notice.typ == 2 %}
+        <i class="fa fa-info-circle"></i>
+        {% elif notice.typ == 3 %}
+        <i class="fa fa-exclamation-circle"></i>
+        {% endif %}
+        {{ notice.content }}
+    </div>
+</div>
+{% endfor %}
+<br>
+<div class="row">
+    <div class="col-lg-1 col-sm-1"></div>
+    <div class="col-lg-10 col-sm-10" id="image">
+        <img src='' width="100%">
+        <h5 style="color:red"></h5>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'jquery.autocomplete.min.js' %}"></script>
+<script>
+    var previous_query;
+
+    $("#inputbox").autocomplete({
+        serviceUrl: "{% url 'search' %}",
+        type: 'POST',
+        dataType: 'json',
+        paramName: 'content',
+        formatResult: function (suggestion, cv) {return suggestion.data + ' ' + suggestion.value;},
+        onSelect: function (suggestion) {just_plot(suggestion.data);},
+        triggerSelectOnValidInput: false
+    });
+
+    /**
+    $("#inputbox").on('keypress', function (e) {
+        if (e.which == 13 || e.keyCode == 13) just_plot(this.value);
+    });
+    **/
+
+    $("#btn-plot").on('click', function () {
+        var value = $("#inputbox").val();
+        just_plot(value);
+    });
+
+    function just_plot (query) {
+        if (query == '' || query == ' ' || query == undefined) return;
+        if (query == previous_query) return;
+        $("#image h5").text('');
+        $("#btn-plot i.fa-circle-o-notch").show();
+        $.post(
+            "{% url 'plot' %}",
+            JSON.stringify({content: query}),
+            function (res) {
+                $("#btn-plot i.fa-circle-o-notch").hide();
+                if (res.status != '0') {
+                    $("#image h5").text(res.message);
+                    return;
+                }
+                previous_query = query;
+                $("#image img").attr('src', '');
+                $("#image img").attr('src', res.src);
+            }
+        )
+    }
+</script>
+{% endblock %}

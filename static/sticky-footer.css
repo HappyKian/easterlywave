@@ -33,3 +33,16 @@ body {
 .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
 .autocomplete-group { padding: 2px 5px; }
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+
+.text-small {font-size: smaller;}
+.color-bad {color: #ff2050;}
+.color-neutral {color: #252025;}
+.color-good {color: #20a050;}
+
+.btn-group .btn:first-child {
+  border-radius: 25px 0 0 25px !important ;
+}
+
+.btn-group .btn:last-child {
+  border-radius: 0 25px 25px 0 !important ;
+}

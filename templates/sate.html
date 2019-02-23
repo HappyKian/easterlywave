@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Himawari-8 Target Area Imagery{% endblock %}
+
+{% block content %}
+<div class="row" style="min-height:4vh"></div>
+<div class="row">
+    <div class="col-lg-3 col-sm-1"></div>
+    <div class="col-lg-6 col-sm-10 text-center">
+        <div class="btn-group" role="group" aria-label="imagetype">
+            <button type="button" class="btn btn-outline-dark" disabled>VIS</button>
+            <button type="button" class="btn btn-outline-dark active">IR</button>
+            <button type="button" class="btn btn-outline-dark">IR-BD</button>
+            <button type="button" class="btn btn-outline-dark">IR-RBTOP</button>
+            <button type="button" class="btn btn-outline-dark">IR-CA</button>
+            <button type="button" class="btn btn-outline-dark">WV-NRL</button>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-lg-1 col-sm-1"></div>
+    <div class="col-lg-10 col-sm-10" id="image">
+        <img src='/media/latest/sate/b13.png' style='display: block;margin: 0 auto;' width="720">
+        <h5 style="color:red"></h5>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(".btn-group .btn").click(function() {
+        $(".btn-group .btn").removeClass("active");
+        $(this).addClass("active");
+        load_image($(this).text());
+    });
+
+    function load_image(text) {
+        text = text.toLowerCase().replace("ir", "b13").replace("wv", "b8").replace("-", "");
+        $("#image img").attr('src', '');
+        $("#image img").attr('src', '/media/latest/sate/'+text+'.png');
+    }
+</script>
+{% endblock %}
